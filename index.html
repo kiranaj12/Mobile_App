@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Hub - SSPT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Student Hub">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiU3R1ZGVudCBIdWIgLSBTU1BUIiwic2hvcnRfbmFtZSI6IlN0dWRlbnQgSHViIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmZmZmZmYiLCJ0aGVtZV9jb2xvciI6IiM2NjdlZWEiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCM2FXUjBhRDBpTVRJNElpQm9aV2xuYUhROUlqRXlPQ0lpSUhacFpYZENiM2c5SWpBZ01DQXhNamdnTVRJNElpQm1hV3hzUFNJaU5qWTNaV1ZoSWlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpUGp4eVpXTjBJSGRwWkhSb1BTSXhNamdpSUdobGFXZG9kRDBpTVRJNElpQm1hV3hzUFNJaU5qWTNaV1ZoSWk4K1BIUmxlSFFnZUQwaU5qUWlJSGs5SWpZMElpQm1hV3hzUFNJaVptWm1abVptSWlCbWIyNTBMWE5wZW1VOUlqSTBJaUJtYjI1MExYZGxhV2RvZEQwaVltOXNaQ0krVTBOSVBDOTBaWGgwUGp3dmMzWm5QZz09IiwidHlwZSI6ImltYWdlL3N2Zyt4bWwiLCJzaXplcyI6IjEyOHgxMjgifV19">
+    
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .ml-insight {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .install-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .error-message {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .success-message {
+            color: #059669;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .input-error {
+            border-color: #dc2626 !important;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+        }
+        .input-success {
+            border-color: #059669 !important;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1) !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- PWA Install Popup -->
+    <div id="installPopup" class="install-popup">
+        <div class="bg-white rounded-lg p-6 max-w-sm w-full animate-fade-in">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl">📱</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Install Student Hub</h3>
+                <p class="text-gray-600 text-sm">Get the full mobile app experience! Install Student Hub on your device for quick access.</p>
+            </div>
+            <div class="space-y-3">
+                <button id="installBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200">
+                    📲 Install App
+                </button>
+                <button onclick="closeInstallPopup()" class="w-full border border-gray-300 text-gray-600 py-3 rounded-lg font-semibold hover:bg-gray-50 transition duration-200">
+                    Maybe Later
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app" class="max-w-md mx-auto bg-white min-h-screen">
+        <!-- Header -->
+        <div class="gradient-bg text-white p-6 text-center">
+            <h1 class="text-2xl font-bold">Student Hub</h1>
+            <p class="text-sm opacity-90">SREE SIDDRAMESHWARA POLYTECHNIC TIPTUR</p>
+        </div>
+
+        <!-- Login Screen -->
+        <div id="loginScreen" class="p-6 animate-fade-in">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-3xl">🎓</span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Welcome Back</h2>
+                <p class="text-gray-600">Sign in to access your student portal</p>
+            </div>
+
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Student ID *</label>
+                    <input type="text" id="loginStudentId" placeholder="e.g., 485CS2301" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           maxlength="9" required>
+                    <div id="loginStudentIdError" class="error-message hidden"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           minlength="6" required>
+                    <div id="loginPasswordError" class="error-message hidden"></div>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200">
+                    Sign In
+                </button>
+                <button type="button" onclick="showRegister()" class="w-full border border-blue-600 text-blue-600 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-200">
+                    Create New Account
+                </button>
+            </form>
+        </div>
+
+        <!-- Register Screen -->
+        <div id="registerScreen" class="p-6 animate-fade-in hidden">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Create Account</h2>
+                <p class="text-gray-600">Join the student community</p>
+            </div>
+
+            <form id="registerForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                    <input type="text" id="regName" placeholder="Enter your full name"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           minlength="2" maxlength="50" required>
+                    <div id="regNameError" class="error-message hidden"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Branch *</label>
+                    <select id="regBranch" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        <option value="">Select Branch</option>
+                        <option value="ADFD">Apparel Design & Fashion Design (ADFD)</option>
+                        <option value="CSE">Computer Science & Engineering (CSE)</option>
+                        <option value="CS">Computer Science</option>
+                        <option value="EC">Electronics & Communication (EC)</option>
+                        <option value="EEE">Electrical & Electronics Engineering (EEE)</option>
+                        <option value="EE">Electrical Engineering (EE)</option>
+                        <option value="CE">Civil Engineering (CE)</option>
+                        <option value="ME">Mechanical Engineering (ME)</option>
+                    </select>
+                    <div id="regBranchError" class="error-message hidden"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Year of Admission *</label>
+                    <select id="regYear" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        <option value="">Select Year</option>
+                        <option value="20">2020</option>
+                        <option value="21">2021</option>
+                        <option value="22">2022</option>
+                        <option value="23">2023</option>
+                        <option value="24">2024</option>
+                        <option value="25">2025</option>
+                        <option value="26">2026</option>
+                    </select>
+                    <div id="regYearError" class="error-message hidden"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                    <input type="email" id="regEmail" placeholder="Enter your email"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           required>
+                    <div id="regEmailError" class="error-message hidden"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                    <input type="tel" id="regPhone" placeholder="Enter 10-digit phone number"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           pattern="[0-9]{10}" maxlength="10" required>
+                    <div id="regPhoneError" class="error-message hidden"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
+                    <input type="password" id="regPassword" placeholder="Minimum 6 characters with letters and numbers"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           minlength="6" required>
+                    <div id="regPasswordError" class="error-message hidden"></div>
+                    <div class="text-xs text-gray-500 mt-1">Password must contain at least 6 characters with letters and numbers</div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password *</label>
+                    <input type="password" id="regConfirmPassword" placeholder="Re-enter your password"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           minlength="6" required>
+                    <div id="regConfirmPasswordError" class="error-message hidden"></div>
+                </div>
+                <div class="bg-blue-50 p-3 rounded-lg">
+                    <p class="text-sm text-blue-700">Your Student ID will be: <span id="generatedId" class="font-bold">485XX23XX</span></p>
+                </div>
+                <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-200">
+                    Create Account
+                </button>
+                <button type="button" onclick="showLogin()" class="w-full border border-gray-300 text-gray-600 py-3 rounded-lg font-semibold hover:bg-gray-50 transition duration-200">
+                    Back to Login
+                </button>
+            </form>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="hidden">
+            <!-- Navigation -->
+            <div class="bg-white border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800" id="welcomeText">Welcome, Student</h3>
+                        <p class="text-sm text-gray-600" id="studentIdDisplay">ID: 485CS2301</p>
+                    </div>
+                    <button onclick="logout()" class="text-red-600 hover:text-red-700">
+                        <span class="text-xl">🚪</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Insights Panel -->
+            <div class="p-6 bg-gradient-to-r from-purple-50 to-blue-50">
+                <h4 class="text-lg font-bold ml-insight mb-3">🤖 AI Insights</h4>
+                <div id="aiInsights" class="space-y-2">
+                    <div class="bg-white p-3 rounded-lg shadow-sm">
+                        <p class="text-sm text-gray-700">📊 Your attendance is <span class="font-bold text-green-600">85%</span> - Keep it up!</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg shadow-sm">
+                        <p class="text-sm text-gray-700">📈 Predicted grade: <span class="font-bold text-blue-600">A-</span> based on current performance</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Options -->
+            <div class="p-6 space-y-4">
+                <button onclick="showProfile()" class="w-full bg-white p-4 rounded-lg card-shadow flex items-center space-x-4 hover:bg-gray-50 transition duration-200">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span class="text-xl">👤</span>
+                    </div>
+                    <div class="text-left">
+                        <h4 class="font-semibold text-gray-800">My Profile</h4>
+                        <p class="text-sm text-gray-600">View and edit your details</p>
+                    </div>
+                </button>
+
+                <button onclick="showAttendance()" class="w-full bg-white p-4 rounded-lg card-shadow flex items-center space-x-4 hover:bg-gray-50 transition duration-200">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <span class="text-xl">📅</span>
+                    </div>
+                    <div class="text-left">
+                        <h4 class="font-semibold text-gray-800">Attendance</h4>
+                        <p class="text-sm text-gray-600">Track your attendance record</p>
+                    </div>
+                </button>
+
+                <button onclick="showMarks()" class="w-full bg-white p-4 rounded-lg card-shadow flex items-center space-x-4 hover:bg-gray-50 transition duration-200">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                        <span class="text-xl">📊</span>
+                    </div>
+                    <div class="text-left">
+                        <h4 class="font-semibold text-gray-800">Marks & Grades</h4>
+                        <p class="text-sm text-gray-600">View your academic performance</p>
+                    </div>
+                </button>
+
+                <button onclick="showMLAnalytics()" class="w-full bg-white p-4 rounded-lg card-shadow flex items-center space-x-4 hover:bg-gray-50 transition duration-200">
+                    <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
+                        <span class="text-xl">🧠</span>
+                    </div>
+                    <div class="text-left">
+                        <h4 class="font-semibold text-gray-800">AI Analytics</h4>
+                        <p class="text-sm text-gray-600">Smart insights and predictions</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div id="profileScreen" class="hidden">
+            <div class="bg-white border-b border-gray-200 px-6 py-4 flex items-center">
+                <button onclick="showDashboard()" class="mr-4 text-blue-600">←</button>
+                <h3 class="text-lg font-semibold text-gray-800">My Profile</h3>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-3xl">👤</span>
+                    </div>
+                </div>
+
+                <form id="profileForm">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                            <input type="text" id="profileName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                            <div id="profileNameError" class="error-message hidden"></div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Student ID</label>
+                            <input type="text" id="profileStudentId" disabled class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                            <input type="email" id="profileEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                            <div id="profileEmailError" class="error-message hidden"></div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                            <input type="tel" id="profilePhone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" pattern="[0-9]{10}" maxlength="10" required>
+                            <div id="profilePhoneError" class="error-message hidden"></div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Branch</label>
+                            <input type="text" id="profileBranch" disabled class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Current Semester *</label>
+                            <select id="profileSemester" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                                <option value="1">1st Semester</option>
+                                <option value="2">2nd Semester</option>
+                                <option value="3">3rd Semester</option>
+                                <option value="4">4th Semester</option>
+                                <option value="5">5th Semester</option>
+                                <option value="6">6th Semester</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200">
+                            Update Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Attendance Screen -->
+        <div id="attendanceScreen" class="hidden">
+            <div class="bg-white border-b border-gray-200 px-6 py-4 flex items-center">
+                <button onclick="showDashboard()" class="mr-4 text-blue-600">←</button>
+                <h3 class="text-lg font-semibold text-gray-800">Attendance</h3>
+            </div>
+            
+            <div class="p-6">
+                <div class="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg mb-6">
+                    <h4 class="font-bold text-gray-800 mb-2">Overall Attendance</h4>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-1 bg-gray-200 rounded-full h-3">
+                            <div id="attendanceBar" class="bg-green-500 h-3 rounded-full" style="width: 85%"></div>
+                        </div>
+                        <span id="attendancePercent" class="font-bold text-green-600">85%</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Present: <span id="presentDays">85</span> days | Absent: <span id="absentDays">15</span> days</p>
+                </div>
+
+                <div class="space-y-4">
+                    <h4 class="font-semibold text-gray-800">Subject-wise Attendance</h4>
+                    <div id="subjectAttendance" class="space-y-3">
+                        <!-- Subject attendance will be populated here -->
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="font-semibold text-gray-800 mb-4">Mark Today's Attendance</h4>
+                    <div class="bg-white border border-gray-200 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-medium">Today's Date</span>
+                            <span id="todayDate" class="text-gray-600"></span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="markAttendance('present')" class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-200">
+                                Present ✓
+                            </button>
+                            <button onclick="markAttendance('absent')" class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition duration-200">
+                                Absent ✗
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marks Screen -->
+        <div id="marksScreen" class="hidden">
+            <div class="bg-white border-b border-gray-200 px-6 py-4 flex items-center">
+                <button onclick="showDashboard()" class="mr-4 text-blue-600">←</button>
+                <h3 class="text-lg font-semibold text-gray-800">Marks & Grades</h3>
+            </div>
+            
+            <div class="p-6">
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Semester</label>
+                    <select id="semesterSelect" onchange="loadMarks()" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="1">1st Semester</option>
+                        <option value="2">2nd Semester</option>
+                        <option value="3">3rd Semester</option>
+                        <option value="4">4th Semester</option>
+                        <option value="5">5th Semester</option>
+                        <option value="6">6th Semester</option>
+                    </select>
+                </div>
+
+                <div id="marksContainer" class="space-y-4">
+                    <!-- Marks will be populated here -->
+                </div>
+
+                <div class="mt-6 bg-blue-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-blue-800 mb-2">Semester Summary</h4>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="text-gray-600">Total Marks:</span>
+                            <span id="totalMarks" class="font-bold ml-2">450/500</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Percentage:</span>
+                            <span id="percentage" class="font-bold ml-2">90%</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Grade:</span>
+                            <span id="grade" class="font-bold ml-2">A+</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">CGPA:</span>
+                            <span id="cgpa" class="font-bold ml-2">9.2</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ML Analytics Screen -->
+        <div id="mlAnalyticsScreen" class="hidden">
+            <div class="bg-white border-b border-gray-200 px-6 py-4 flex items-center">
+                <button onclick="showDashboard()" class="mr-4 text-blue-600">←</button>
+                <h3 class="text-lg font-semibold text-gray-800">AI Analytics</h3>
+            </div>
+            
+            <div class="p-6 space-y-6">
+                <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg">
+                    <h4 class="font-bold ml-insight mb-3">🤖 Performance Prediction</h4>
+                    <div class="space-y-3">
+                        <div class="bg-white p-3 rounded-lg">
+                            <p class="text-sm text-gray-700">Expected Final Grade: <span class="font-bold text-green-600">A-</span></p>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 87%"></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg">
+                            <p class="text-sm text-gray-700">Improvement Needed: <span class="font-bold text-orange-600">Mathematics</span></p>
+                            <p class="text-xs text-gray-500 mt-1">Focus on calculus and statistics topics</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-blue-800 mb-3">📊 Learning Analytics</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-700">Study Pattern</span>
+                            <span class="text-sm font-bold text-blue-600">Consistent</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-700">Best Performance Time</span>
+                            <span class="text-sm font-bold text-blue-600">Morning</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-700">Weak Areas</span>
+                            <span class="text-sm font-bold text-red-600">Theory Subjects</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-green-800 mb-3">💡 AI Recommendations</h4>
+                    <div class="space-y-2">
+                        <div class="bg-white p-3 rounded-lg">
+                            <p class="text-sm text-gray-700">• Increase study time for Mathematics by 30 minutes daily</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg">
+                            <p class="text-sm text-gray-700">• Join study group for Database Management System</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg">
+                            <p class="text-sm text-gray-700">• Practice more coding problems in Python</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-yellow-800 mb-3">🎯 Goal Tracking</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm text-gray-700">Semester Goal: 85%</span>
+                                <span class="text-sm font-bold text-green-600">On Track</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 78%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm text-gray-700">Attendance Goal: 90%</span>
+                                <span class="text-sm font-bold text-yellow-600">Needs Attention</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // PWA Installation
+        let deferredPrompt;
+        let installPopupShown = localStorage.getItem('installPopupShown');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            if (!installPopupShown) {
+                document.getElementById('installPopup').style.display = 'flex';
+            }
+        });
+
+        document.getElementById('installBtn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+            }
+            closeInstallPopup();
+        });
+
+        function closeInstallPopup() {
+            document.getElementById('installPopup').style.display = 'none';
+            localStorage.setItem('installPopupShown', 'true');
+        }
+
+        // Show install popup on first visit if not shown before
+        window.addEventListener('load', () => {
+            if (!installPopupShown && !deferredPrompt) {
+                setTimeout(() => {
+                    if (!localStorage.getItem('installPopupShown')) {
+                        document.getElementById('installPopup').style.display = 'flex';
+                    }
+                }, 2000);
+            }
+        });
+
+        // Student data storage
+        let students = JSON.parse(localStorage.getItem('students')) || {};
+        let currentStudent = null;
+        let studentCounter = JSON.parse(localStorage.getItem('studentCounter')) || 1;
+
+        // Subject data for each semester
+        const subjects = {
+            1: ['Fundamental of Computer', 'Maths', 'IT Skills', 'Statistical Analysis', 'Environmental EVS'],
+            2: ['Advanced Mathematics', 'Physics', 'Chemistry', 'Engineering Drawing', 'Communication Skills'],
+            3: ['Computer Hardware Maintenance and Administration', 'Python', 'Computer Network', 'Database Management System', 'Kannada'],
+            4: ['Software Engineering Principles and Practice', 'Data Structure in Python', 'Java', 'Operating System', 'Indian Constitution'],
+            5: ['AI and ML', 'Web Development', 'Mobile App Development', 'Cyber Security', 'Project Management'],
+            6: ['Project', 'Industrial Training', 'Seminar', 'Comprehensive Viva', 'Personality Development']
+        };
+
+        // Validation functions
+        function validateName(name) {
+            const nameRegex = /^[a-zA-Z\s]{2,50}$/;
+            return nameRegex.test(name.trim());
+        }
+
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function validatePhone(phone) {
+            const phoneRegex = /^[0-9]{10}$/;
+            return phoneRegex.test(phone);
+        }
+
+        function validatePassword(password) {
+            // At least 6 characters, contains letters and numbers
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{6,}$/;
+            return passwordRegex.test(password);
+        }
+
+        function validateStudentId(studentId) {
+            const pattern = /^485[A-Z]{2,4}[0-9]{4}$/;
+            return pattern.test(studentId);
+        }
+
+        function showError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId + 'Error');
+            const inputElement = document.getElementById(fieldId);
+            
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+            inputElement.classList.add('input-error');
+            inputElement.classList.remove('input-success');
+        }
+
+        function showSuccess(fieldId) {
+            const errorElement = document.getElementById(fieldId + 'Error');
+            const inputElement = document.getElementById(fieldId);
+            
+            errorElement.classList.add('hidden');
+            inputElement.classList.remove('input-error');
+            inputElement.classList.add('input-success');
+        }
+
+        function clearValidation(fieldId) {
+            const errorElement = document.getElementById(fieldId + 'Error');
+            const inputElement = document.getElementById(fieldId);
+            
+            errorElement.classList.add('hidden');
+            inputElement.classList.remove('input-error', 'input-success');
+        }
+
+        // Real-time validation
+        function setupRealTimeValidation() {
+            // Login form validation
+            document.getElementById('loginStudentId').addEventListener('input', function() {
+                const value = this.value.trim();
+                if (value === '') {
+                    clearValidation('loginStudentId');
+                } else if (!validateStudentId(value)) {
+                    showError('loginStudentId', 'Invalid Student ID format (e.g., 485CS2301)');
+                } else {
+                    showSuccess('loginStudentId');
+                }
+            });
+
+            document.getElementById('loginPassword').addEventListener('input', function() {
+                const value = this.value;
+                if (value === '') {
+                    clearValidation('loginPassword');
+                } else if (value.length < 6) {
+                    showError('loginPassword', 'Password must be at least 6 characters');
+                } else {
+                    showSuccess('loginPassword');
+                }
+            });
+
+            // Registration form validation
+            document.getElementById('regName').addEventListener('input', function() {
+                const value = this.value.trim();
+                if (value === '') {
+                    clearValidation('regName');
+                } else if (!validateName(value)) {
+                    showError('regName', 'Name must be 2-50 characters, letters only');
+                } else {
+                    showSuccess('regName');
+                }
+            });
+
+            document.getElementById('regEmail').addEventListener('input', function() {
+                const value = this.value.trim();
+                if (value === '') {
+                    clearValidation('regEmail');
+                } else if (!validateEmail(value)) {
+                    showError('regEmail', 'Please enter a valid email address');
+                } else if (isEmailExists(value)) {
+                    showError('regEmail', 'Email already registered');
+                } else {
+                    showSuccess('regEmail');
+                }
+            });
+
+            document.getElementById('regPhone').addEventListener('input', function() {
+                const value = this.value.trim();
+                if (value === '') {
+                    clearValidation('regPhone');
+                } else if (!validatePhone(value)) {
+                    showError('regPhone', 'Please enter a valid 10-digit phone number');
+                } else if (isPhoneExists(value)) {
+                    showError('regPhone', 'Phone number already registered');
+                } else {
+                    showSuccess('regPhone');
+                }
+            });
+
+            document.getElementById('regPassword').addEventListener('input', function() {
+                const value = this.value;
+                if (value === '') {
+                    clearValidation('regPassword');
+                } else if (!validatePassword(value)) {
+                    showError('regPassword', 'Password must be 6+ characters with letters and numbers');
+                } else {
+                    showSuccess('regPassword');
+                }
+                
+                // Also validate confirm password if it has a value
+                const confirmPassword = document.getElementById('regConfirmPassword').value;
+                if (confirmPassword !== '') {
+                    if (confirmPassword !== value) {
+                        showError('regConfirmPassword', 'Passwords do not match');
+                    } else {
+                        showSuccess('regConfirmPassword');
+                    }
+                }
+            });
+
+            document.getElementById('regConfirmPassword').addEventListener('input', function() {
+                const value = this.value;
+                const password = document.getElementById('regPassword').value;
+                
+                if (value === '') {
+                    clearValidation('regConfirmPassword');
+                } else if (value !== password) {
+                    showError('regConfirmPassword', 'Passwords do not match');
+                } else {
+                    showSuccess('regConfirmPassword');
+                }
+            });
+        }
+
+        function isEmailExists(email) {
+            return Object.values(students).some(student => student.email === email);
+        }
+
+        function isPhoneExists(phone) {
+            return Object.values(students).some(student => student.phone === phone);
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateGeneratedId();
+            setTodayDate();
+            setupRealTimeValidation();
+            setupFormSubmissions();
+            
+            // Check if user is already logged in
+            const savedStudent = localStorage.getItem('currentStudent');
+            if (savedStudent) {
+                currentStudent = JSON.parse(savedStudent);
+                showDashboard();
+            } else {
+                // Show install popup after 2 seconds if not shown before
+                setTimeout(() => {
+                    if (!localStorage.getItem('installPopupShown')) {
+                        document.getElementById('installPopup').style.display = 'flex';
+                    }
+                }, 2000);
+            }
+        });
+
+        function setupFormSubmissions() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                login();
+            });
+
+            // Registration form
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                register();
+            });
+
+            // Profile form
+            document.getElementById('profileForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                updateProfile();
+            });
+        }
+
+        // Authentication functions
+        function generateStudentId(branch, year) {
+            const id = String(studentCounter).padStart(2, '0');
+            studentCounter++;
+            localStorage.setItem('studentCounter', JSON.stringify(studentCounter));
+            return `485${branch}${year}${id}`;
+        }
+
+        function updateGeneratedId() {
+            const branch = document.getElementById('regBranch').value;
+            const year = document.getElementById('regYear').value;
+            const generatedIdElement = document.getElementById('generatedId');
+            
+            if (branch && year) {
+                const tempId = `485${branch}${year}XX`;
+                generatedIdElement.textContent = tempId;
+            } else {
+                generatedIdElement.textContent = '485XX23XX';
+            }
+        }
+
+        // Add event listeners for real-time ID generation
+        document.getElementById('regBranch').addEventListener('change', updateGeneratedId);
+        document.getElementById('regYear').addEventListener('change', updateGeneratedId);
+
+        function register() {
+            const name = document.getElementById('regName').value.trim();
+            const branch = document.getElementById('regBranch').value;
+            const year = document.getElementById('regYear').value;
+            const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+            let isValid = true;
+
+            // Validate all fields
+            if (!name) {
+                showError('regName', 'Full name is required');
+                isValid = false;
+            } else if (!validateName(name)) {
+                showError('regName', 'Name must be 2-50 characters, letters only');
+                isValid = false;
+            }
+
+            if (!branch) {
+                showError('regBranch', 'Please select a branch');
+                isValid = false;
+            }
+
+            if (!year) {
+                showError('regYear', 'Please select year of admission');
+                isValid = false;
+            }
+
+            if (!email) {
+                showError('regEmail', 'Email is required');
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                showError('regEmail', 'Please enter a valid email address');
+                isValid = false;
+            } else if (isEmailExists(email)) {
+                showError('regEmail', 'Email already registered');
+                isValid = false;
+            }
+
+            if (!phone) {
+                showError('regPhone', 'Phone number is required');
+                isValid = false;
+            } else if (!validatePhone(phone)) {
+                showError('regPhone', 'Please enter a valid 10-digit phone number');
+                isValid = false;
+            } else if (isPhoneExists(phone)) {
+                showError('regPhone', 'Phone number already registered');
+                isValid = false;
+            }
+
+            if (!password) {
+                showError('regPassword', 'Password is required');
+                isValid = false;
+            } else if (!validatePassword(password)) {
+                showError('regPassword', 'Password must be 6+ characters with letters and numbers');
+                isValid = false;
+            }
+
+            if (!confirmPassword) {
+                showError('regConfirmPassword', 'Please confirm your password');
+                isValid = false;
+            } else if (password !== confirmPassword) {
+                showError('regConfirmPassword', 'Passwords do not match');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            const studentId = generateStudentId(branch, year);
+            
+            const studentData = {
+                studentId: studentId,
+                name: name,
+                branch: branch,
+                year: year,
+                email: email,
+                phone: phone,
+                password: password,
+                semester: 1,
+                attendance: initializeAttendance(),
+                marks: initializeMarks()
+            };
+
+            students[studentId] = studentData;
+            localStorage.setItem('students', JSON.stringify(students));
+
+            alert(`Registration successful! Your Student ID is: ${studentId}\n\nPlease save this ID for future login.`);
+            
+            // Clear form
+            document.getElementById('registerForm').reset();
+            updateGeneratedId();
+            
+            showLogin();
+        }
+
+        function login() {
+            const studentId = document.getElementById('loginStudentId').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            let isValid = true;
+
+            if (!studentId) {
+                showError('loginStudentId', 'Student ID is required');
+                isValid = false;
+            } else if (!validateStudentId(studentId)) {
+                showError('loginStudentId', 'Invalid Student ID format (e.g., 485CS2301)');
+                isValid = false;
+            }
+
+            if (!password) {
+                showError('loginPassword', 'Password is required');
+                isValid = false;
+            } else if (password.length < 6) {
+                showError('loginPassword', 'Password must be at least 6 characters');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            if (students[studentId] && students[studentId].password === password) {
+                currentStudent = students[studentId];
+                localStorage.setItem('currentStudent', JSON.stringify(currentStudent));
+                
+                // Clear form
+                document.getElementById('loginForm').reset();
+                
+                showDashboard();
+                updateAIInsights();
+            } else {
+                showError('loginStudentId', 'Invalid Student ID or password');
+                showError('loginPassword', 'Invalid Student ID or password');
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                currentStudent = null;
+                localStorage.removeItem('currentStudent');
+                showLogin();
+            }
+        }
+
+        // Initialize data structures
+        function initializeAttendance() {
+            const attendance = {};
+            for (let sem = 1; sem <= 6; sem++) {
+                attendance[sem] = {};
+                subjects[sem].forEach(subject => {
+                    attendance[sem][subject] = {
+                        present: Math.floor(Math.random() * 80) + 60,
+                        total: 100
+                    };
+                });
+            }
+            return attendance;
+        }
+
+        function initializeMarks() {
+            const marks = {};
+            for (let sem = 1; sem <= 6; sem++) {
+                marks[sem] = {};
+                subjects[sem].forEach(subject => {
+                    marks[sem][subject] = {
+                        internal: Math.floor(Math.random() * 30) + 60,
+                        external: Math.floor(Math.random() * 70) + 60,
+                        total: 100
+                    };
+                });
+            }
+            return marks;
+        }
+
+        // Screen navigation functions
+        function showLogin() {
+            hideAllScreens();
+            document.getElementById('loginScreen').classList.remove('hidden');
+            // Clear any validation states
+            clearAllValidations();
+        }
+
+        function showRegister() {
+            hideAllScreens();
+            document.getElementById('registerScreen').classList.remove('hidden');
+            clearAllValidations();
+        }
+
+        function showDashboard() {
+            hideAllScreens();
+            document.getElementById('dashboard').classList.remove('hidden');
+            if (currentStudent) {
+                document.getElementById('welcomeText').textContent = `Welcome, ${currentStudent.name}`;
+                document.getElementById('studentIdDisplay').textContent = `ID: ${currentStudent.studentId}`;
+            }
+        }
+
+        function showProfile() {
+            hideAllScreens();
+            document.getElementById('profileScreen').classList.remove('hidden');
+            loadProfile();
+        }
+
+        function showAttendance() {
+            hideAllScreens();
+            document.getElementById('attendanceScreen').classList.remove('hidden');
+            loadAttendance();
+        }
+
+        function showMarks() {
+            hideAllScreens();
+            document.getElementById('marksScreen').classList.remove('hidden');
+            loadMarks();
+        }
+
+        function showMLAnalytics() {
+            hideAllScreens();
+            document.getElementById('mlAnalyticsScreen').classList.remove('hidden');
+            updateMLAnalytics();
+        }
+
+        function hideAllScreens() {
+            const screens = ['loginScreen', 'registerScreen', 'dashboard', 'profileScreen', 'attendanceScreen', 'marksScreen', 'mlAnalyticsScreen'];
+            screens.forEach(screen => {
+                document.getElementById(screen).classList.add('hidden');
+            });
+        }
+
+        function clearAllValidations() {
+            const fields = ['loginStudentId', 'loginPassword', 'regName', 'regBranch', 'regYear', 'regEmail', 'regPhone', 'regPassword', 'regConfirmPassword', 'profileName', 'profileEmail', 'profilePhone'];
+            fields.forEach(field => {
+                clearValidation(field);
+            });
+        }
+
+        // Profile functions
+        function loadProfile() {
+            if (!currentStudent) return;
+            
+            document.getElementById('profileName').value = currentStudent.name;
+            document.getElementById('profileStudentId').value = currentStudent.studentId;
+            document.getElementById('profileEmail').value = currentStudent.email;
+            document.getElementById('profilePhone').value = currentStudent.phone || '';
+            document.getElementById('profileBranch').value = currentStudent.branch;
+            document.getElementById('profileSemester').value = currentStudent.semester;
+        }
+
+        function updateProfile() {
+            const name = document.getElementById('profileName').value.trim();
+            const email = document.getElementById('profileEmail').value.trim();
+            const phone = document.getElementById('profilePhone').value.trim();
+            const semester = document.getElementById('profileSemester').value;
+
+            let isValid = true;
+
+            if (!name) {
+                showError('profileName', 'Full name is required');
+                isValid = false;
+            } else if (!validateName(name)) {
+                showError('profileName', 'Name must be 2-50 characters, letters only');
+                isValid = false;
+            }
+
+            if (!email) {
+                showError('profileEmail', 'Email is required');
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                showError('profileEmail', 'Please enter a valid email address');
+                isValid = false;
+            } else if (email !== currentStudent.email && isEmailExists(email)) {
+                showError('profileEmail', 'Email already registered');
+                isValid = false;
+            }
+
+            if (!phone) {
+                showError('profilePhone', 'Phone number is required');
+                isValid = false;
+            } else if (!validatePhone(phone)) {
+                showError('profilePhone', 'Please enter a valid 10-digit phone number');
+                isValid = false;
+            } else if (phone !== currentStudent.phone && isPhoneExists(phone)) {
+                showError('profilePhone', 'Phone number already registered');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            currentStudent.name = name;
+            currentStudent.email = email;
+            currentStudent.phone = phone;
+            currentStudent.semester = parseInt(semester);
+
+            students[currentStudent.studentId] = currentStudent;
+            localStorage.setItem('students', JSON.stringify(students));
+            localStorage.setItem('currentStudent', JSON.stringify(currentStudent));
+
+            alert('Profile updated successfully!');
+            showDashboard();
+        }
+
+        // Attendance functions
+        function loadAttendance() {
+            if (!currentStudent) return;
+
+            const semester = currentStudent.semester;
+            const attendanceData = currentStudent.attendance[semester];
+            
+            let totalPresent = 0;
+            let totalClasses = 0;
+            let subjectHTML = '';
+
+            subjects[semester].forEach(subject => {
+                const subjectData = attendanceData[subject];
+                const percentage = Math.round((subjectData.present / subjectData.total) * 100);
+                
+                totalPresent += subjectData.present;
+                totalClasses += subjectData.total;
+
+                subjectHTML += `
+                    <div class="bg-white p-4 rounded-lg border border-gray-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <h5 class="font-medium text-gray-800">${subject}</h5>
+                            <span class="text-sm font-bold ${percentage >= 75 ? 'text-green-600' : 'text-red-600'}">${percentage}%</span>
+                        </div>
+                        <div class="flex-1 bg-gray-200 rounded-full h-2">
+                            <div class="h-2 rounded-full ${percentage >= 75 ? 'bg-green-500' : 'bg-red-500'}" style="width: ${percentage}%"></div>
+                        </div>
+                        <p class="text-xs text-gray-600 mt-1">${subjectData.present}/${subjectData.total} classes</p>
+                    </div>
+                `;
+            });
+
+            const overallPercentage = Math.round((totalPresent / totalClasses) * 100);
+            
+            document.getElementById('attendanceBar').style.width = `${overallPercentage}%`;
+            document.getElementById('attendancePercent').textContent = `${overallPercentage}%`;
+            document.getElementById('presentDays').textContent = totalPresent;
+            document.getElementById('absentDays').textContent = totalClasses - totalPresent;
+            document.getElementById('subjectAttendance').innerHTML = subjectHTML;
+        }
+
+        function setTodayDate() {
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('todayDate').textContent = today.toLocaleDateString('en-US', options);
+        }
+
+        function markAttendance(status) {
+            if (!currentStudent) return;
+
+            const semester = currentStudent.semester;
+            const subject = subjects[semester][0]; // Mark for first subject as example
+            
+            if (status === 'present') {
+                currentStudent.attendance[semester][subject].present++;
+            }
+            currentStudent.attendance[semester][subject].total++;
+
+            students[currentStudent.studentId] = currentStudent;
+            localStorage.setItem('students', JSON.stringify(students));
+            localStorage.setItem('currentStudent', JSON.stringify(currentStudent));
+
+            alert(`Attendance marked as ${status.toUpperCase()} for today!`);
+            loadAttendance();
+            updateAIInsights();
+        }
+
+        // Marks functions
+        function loadMarks() {
+            if (!currentStudent) return;
+
+            const semester = parseInt(document.getElementById('semesterSelect').value);
+            const marksData = currentStudent.marks[semester];
+            
+            let marksHTML = '';
+            let totalMarks = 0;
+            let maxMarks = 0;
+
+            subjects[semester].forEach(subject => {
+                const subjectData = marksData[subject];
+                const total = subjectData.internal + subjectData.external;
+                const percentage = Math.round((total / subjectData.total) * 100);
+                
+                totalMarks += total;
+                maxMarks += subjectData.total;
+
+                let grade = 'F';
+                if (percentage >= 90) grade = 'A+';
+                else if (percentage >= 80) grade = 'A';
+                else if (percentage >= 70) grade = 'B+';
+                else if (percentage >= 60) grade = 'B';
+                else if (percentage >= 50) grade = 'C';
+
+                marksHTML += `
+                    <div class="bg-white p-4 rounded-lg border border-gray-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <h5 class="font-medium text-gray-800">${subject}</h5>
+                            <span class="text-sm font-bold px-2 py-1 rounded ${grade === 'A+' || grade === 'A' ? 'bg-green-100 text-green-800' : grade === 'B+' || grade === 'B' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'}">${grade}</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-sm">
+                            <div>
+                                <span class="text-gray-600">Internal:</span>
+                                <span class="font-bold ml-1">${subjectData.internal}/30</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600">External:</span>
+                                <span class="font-bold ml-1">${subjectData.external}/70</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600">Total:</span>
+                                <span class="font-bold ml-1">${total}/100</span>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                <div class="h-2 rounded-full ${percentage >= 75 ? 'bg-green-500' : percentage >= 60 ? 'bg-blue-500' : 'bg-yellow-500'}" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const overallPercentage = Math.round((totalMarks / maxMarks) * 100);
+            let overallGrade = 'F';
+            if (overallPercentage >= 90) overallGrade = 'A+';
+            else if (overallPercentage >= 80) overallGrade = 'A';
+            else if (overallPercentage >= 70) overallGrade = 'B+';
+            else if (overallPercentage >= 60) overallGrade = 'B';
+            else if (overallPercentage >= 50) overallGrade = 'C';
+
+            const cgpa = (overallPercentage / 10).toFixed(1);
+
+            document.getElementById('marksContainer').innerHTML = marksHTML;
+            document.getElementById('totalMarks').textContent = `${totalMarks}/${maxMarks}`;
+            document.getElementById('percentage').textContent = `${overallPercentage}%`;
+            document.getElementById('grade').textContent = overallGrade;
+            document.getElementById('cgpa').textContent = cgpa;
+        }
+
+        // AI/ML Analytics functions
+        function updateAIInsights() {
+            if (!currentStudent) return;
+
+            const semester = currentStudent.semester;
+            const attendanceData = currentStudent.attendance[semester];
+            const marksData = currentStudent.marks[semester];
+            
+            // Calculate overall attendance
+            let totalPresent = 0;
+            let totalClasses = 0;
+            subjects[semester].forEach(subject => {
+                totalPresent += attendanceData[subject].present;
+                totalClasses += attendanceData[subject].total;
+            });
+            const attendancePercentage = Math.round((totalPresent / totalClasses) * 100);
+
+            // Calculate predicted grade based on current performance
+            let totalMarks = 0;
+            let maxMarks = 0;
+            subjects[semester].forEach(subject => {
+                const subjectData = marksData[subject];
+                totalMarks += subjectData.internal + subjectData.external;
+                maxMarks += subjectData.total;
+            });
+            const currentPercentage = Math.round((totalMarks / maxMarks) * 100);
+            
+            let predictedGrade = 'C';
+            if (currentPercentage >= 90) predictedGrade = 'A+';
+            else if (currentPercentage >= 80) predictedGrade = 'A';
+            else if (currentPercentage >= 70) predictedGrade = 'B+';
+            else if (currentPercentage >= 60) predictedGrade = 'B';
+
+            const insightsHTML = `
+                <div class="bg-white p-3 rounded-lg shadow-sm">
+                    <p class="text-sm text-gray-700">📊 Your attendance is <span class="font-bold ${attendancePercentage >= 75 ? 'text-green-600' : 'text-red-600'}">${attendancePercentage}%</span> - ${attendancePercentage >= 75 ? 'Keep it up!' : 'Needs improvement!'}</p>
+                </div>
+                <div class="bg-white p-3 rounded-lg shadow-sm">
+                    <p class="text-sm text-gray-700">📈 Predicted grade: <span class="font-bold text-blue-600">${predictedGrade}</span> based on current performance</p>
+                </div>
+            `;
+
+            document.getElementById('aiInsights').innerHTML = insightsHTML;
+        }
+
+        function updateMLAnalytics() {
+            if (!currentStudent) return;
+
+            // This function would contain more sophisticated ML algorithms
+            // For demo purposes, we're showing simulated AI insights
+            
+            // The analytics are already populated in the HTML
+            // In a real application, this would call ML models to generate insights
+            console.log('ML Analytics updated for student:', currentStudent.studentId);
+        }
+
+        // Service Worker Registration for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    const CACHE_NAME = 'student-hub-v1';
+                    const urlsToCache = [
+                        '/',
+                        'https://cdn.tailwindcss.com'
+                    ];
+
+                    self.addEventListener('install', (event) => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME)
+                                .then((cache) => cache.addAll(urlsToCache))
+                        );
+                    });
+
+                    self.addEventListener('fetch', (event) => {
+                        event.respondWith(
+                            caches.match(event.request)
+                                .then((response) => {
+                                    if (response) {
+                                        return response;
+                                    }
+                                    return fetch(event.request);
+                                })
+                        );
+                    });
+                `;
+
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+
+                navigator.serviceWorker.register(swUrl)
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'978a9f4d9492935f',t:'MTc1Njc5MTA5OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
